@@ -6,16 +6,29 @@
 #include <stack>
 #include <string>
 #include <climits>
+#include <limits>
 using namespace std;
 
 const int SIZE = 13;
 const int INF = INT_MAX;
+
+const int DISPLAY = 1;
+const int DFS_SEARCH = 2;
+const int BFS_SEARCH = 3;
+const int SHORTEST_PATH = 4;
+const int MST = 5;
+const int QUIT = 6;
 
 struct Edge {
     int src, dest, weight;
 };
 
 typedef pair<int, int> Pair;  // Creates alias 'Pair' for the pair<int,int> data type
+
+// Function prototype
+void displayMenu();
+
+int getInput();
 
 class Graph {
 public:
@@ -309,7 +322,46 @@ public:
         cout << "Total MST Weight: " << totalWeight << endl;
         cout << "Total Connections: " << edgeCount << endl;
     }
+
+    // validDevice() checks if a network device exists
+    // arguments: device number to check
+    // returns: true if the device is active, otherwise false
+    bool validDevice(int device) {
+        return device >= 0 && device < SIZE && active[device];
+    }
 };
+
+// displayMenu() displays the computer network menu
+// arguments: none
+// returns: nothing, displays the available menu options
+void displayMenu() {
+    cout << "========================================" << endl;
+    cout << "       Computer Network Management" << endl;
+    cout << "========================================" << endl;
+    cout << "1. Display Network Topology" << endl;
+    cout << "2. Depth-First Search (DFS)" << endl;
+    cout << "3. Breadth-First Search (BFS)" << endl;
+    cout << "4. Shortest Network Path (Dijkstra)" << endl;
+    cout << "5. Minimum Spanning Tree (Prim)" << endl;
+    cout << "6. Quit" << endl;
+    cout << "========================================" << endl;
+    cout << "Enter your choice: ";
+}
+
+// getInput() reads and validates an integer from the user
+// arguments: none
+// returns: a valid integer entered by the user
+int getInput() {
+    int number;
+
+    while (!(cin >> number)) {
+        cout << "Invalid input. Enter a number: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    return number;
+}
 
 int main() {
     // Creates a vector of graph edges/weights
@@ -328,24 +380,80 @@ int main() {
     // Creates graph
     Graph graph(edges);
 
-    // Prints adjacency list representation of graph
-    graph.printGraph();
-    cout << endl;
+    int choice;
+    int start;
 
-    // Test depth-first search starting from vertex 0
-    graph.DFS(0);
-    cout << endl;
+    do {
+        cout << endl;
+        displayMenu();
 
-    // Test breadth-first search starting from vertex 0
-    graph.BFS(0);
-    cout << endl;
+        choice = getInput();
+        cout << endl;
 
-    // Find shortest network latency from the main router
-    graph.shortestPath(0);
-    cout << endl;
+        switch (choice) {
+            case DISPLAY:
+                graph.printGraph();
+                break;
 
-    // Find the minimum spanning tree of the network
-    graph.minimumSpanningTree(0);
+            case DFS_SEARCH:
+                cout << "Enter starting device (0-12): ";
+                start = getInput();
+
+                if (graph.validDevice(start)) {
+                    graph.DFS(start);
+                }
+                else {
+                    cout << "Invalid starting device." << endl;
+                }
+                break;
+
+            case BFS_SEARCH:
+                cout << "Enter starting device (0-12): ";
+                start = getInput();
+
+                if (graph.validDevice(start)) {
+                    graph.BFS(start);
+                }
+                else {
+                    cout << "Invalid starting device." << endl;
+                }
+                break;
+
+            case SHORTEST_PATH:
+                cout << "Enter starting device (0-12): ";
+                start = getInput();
+
+                if (graph.validDevice(start)) {
+                    graph.shortestPath(start);
+                }
+                else {
+                    cout << "Invalid starting device." << endl;
+                }
+                break;
+
+            case MST:
+                cout << "Enter starting device (0-12): ";
+                start = getInput();
+
+                if (graph.validDevice(start)) {
+                    graph.minimumSpanningTree(start);
+                }
+                else {
+                    cout << "Invalid starting device." << endl;
+                }
+                break;
+
+            case QUIT:
+                cout << "Exiting Computer Network Management."
+                     << endl;
+                break;
+
+            default:
+                cout << "Invalid choice. Please try again."
+                     << endl;
+        }
+
+    } while (choice != QUIT);
 
     return 0;
 }
