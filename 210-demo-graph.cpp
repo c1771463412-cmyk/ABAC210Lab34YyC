@@ -78,6 +78,37 @@ public:
 
         cout << endl;
     }
+
+    // BFS() traverses the graph using breadth-first search
+    // arguments: starting vertex of the traversal
+    // returns: nothing, displays the visited vertices
+    void BFS(int start) {
+        vector<bool> visited(SIZE, false);
+        queue<int> q;
+
+        visited[start] = true;
+        q.push(start);
+
+        cout << "BFS starting from vertex " << start << ":" << endl;
+
+        while (!q.empty()) {
+            int current = q.front();
+            q.pop();
+
+            cout << current << " ";
+
+            for (Pair neighbor : adjList[current]) {
+                int next = neighbor.first;
+
+                if (!visited[next]) {
+                    visited[next] = true;
+                    q.push(next);
+                }
+            }
+        }
+
+        cout << endl;
+    }
 };
 
 int main() {
@@ -93,10 +124,11 @@ int main() {
     // Prints adjacency list representation of graph
     graph.printGraph();
 
-    cout << endl;
-
     // Test depth-first search starting from vertex 0
     graph.DFS(0);
+
+    // Test breadth-first search starting from vertex 0
+    graph.BFS(0);
 
     return 0;
 }
