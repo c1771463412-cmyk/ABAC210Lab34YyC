@@ -170,7 +170,7 @@ public:
         cout << "Network scan completed." << endl;
     }
 
-        // shortestPath() finds the shortest paths using Dijkstra's algorithm
+    // shortestPath() finds the shortest paths using Dijkstra's algorithm
     // arguments: starting device of the network
     // returns: nothing, displays the shortest latency to each device
     void shortestPath(int start) {
@@ -238,6 +238,77 @@ public:
             }
         }
     }
+
+    // minimumSpanningTree() finds the MST using Prim's algorithm
+    // arguments: starting device of the network
+    // returns: nothing, displays MST edges and total weight
+    void minimumSpanningTree(int start) {
+        if (start < 0 || start >= SIZE || !active[start]) {
+            cout << "Invalid starting device." << endl;
+            return;
+        }
+
+        vector<bool> inMST(SIZE, false);
+        int totalWeight = 0;
+        int edgeCount = 0;
+        int activeCount = 0;
+
+        // Count the active devices
+        for (int i = 0; i < SIZE; i++) {
+            if (active[i]) {
+                activeCount++;
+            }
+        }
+
+        // Start the MST from the selected device
+        inMST[start] = true;
+
+        cout << "Minimum Spanning Tree (Prim's Algorithm):"
+             << endl;
+
+        // Add one new device to the MST each time
+        while (edgeCount < activeCount - 1) {
+            int minWeight = INF;
+            int from = -1;
+            int to = -1;
+
+            // Search all devices already in the MST
+            for (int i = 0; i < SIZE; i++) {
+                if (active[i] && inMST[i]) {
+                    for (Pair neighbor : adjList[i]) {
+                        int next = neighbor.first;
+                        int weight = neighbor.second;
+
+                        if (active[next] && !inMST[next] &&
+                            weight < minWeight) {
+                            minWeight = weight;
+                            from = i;
+                            to = next;
+                        }
+                    }
+                }
+            }
+
+            // Stop if the remaining devices cannot be reached
+            if (to == -1) {
+                cout << "Network is disconnected." << endl;
+                return;
+            }
+
+            // Add the selected connection to the MST
+            inMST[to] = true;
+            totalWeight += minWeight;
+            edgeCount++;
+
+            cout << "Device " << from << " ("
+                 << deviceNames[from] << ") -> Device "
+                 << to << " (" << deviceNames[to] << ")"
+                 << " - Weight: " << minWeight << endl;
+        }
+
+        cout << "Total MST Weight: " << totalWeight << endl;
+        cout << "Total Connections: " << edgeCount << endl;
+    }
 };
 
 int main() {
@@ -271,6 +342,10 @@ int main() {
 
     // Find shortest network latency from the main router
     graph.shortestPath(0);
+    cout << endl;
+
+    // Find the minimum spanning tree of the network
+    graph.minimumSpanningTree(0);
 
     return 0;
 }
