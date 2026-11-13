@@ -47,6 +47,37 @@ public:
             cout << endl;
         }
     }
+
+    // DFS() traverses the graph using depth-first search
+    // arguments: starting vertex of the traversal
+    // returns: nothing, displays the visited vertices
+    void DFS(int start) {
+        vector<bool> visited(SIZE, false);
+        stack<int> s;
+
+        visited[start] = true;
+        s.push(start);
+
+        cout << "DFS starting from vertex " << start << ":" << endl;
+
+        while (!s.empty()) {
+            int current = s.top();
+            s.pop();
+
+            cout << current << " ";
+
+            for (Pair neighbor : adjList[current]) {
+                int next = neighbor.first;
+
+                if (!visited[next]) {
+                    visited[next] = true;
+                    s.push(next);
+                }
+            }
+        }
+
+        cout << endl;
+    }
 };
 
 int main() {
@@ -61,6 +92,11 @@ int main() {
 
     // Prints adjacency list representation of graph
     graph.printGraph();
+
+    cout << endl;
+
+    // Test depth-first search starting from vertex 0
+    graph.DFS(0);
 
     return 0;
 }
