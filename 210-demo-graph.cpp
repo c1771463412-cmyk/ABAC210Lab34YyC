@@ -5,9 +5,11 @@
 #include <queue>
 #include <stack>
 #include <string>
+#include <climits>
 using namespace std;
 
 const int SIZE = 13;
+const int INF = INT_MAX;
 
 struct Edge {
     int src, dest, weight;
@@ -167,6 +169,75 @@ public:
 
         cout << "Network scan completed." << endl;
     }
+
+        // shortestPath() finds the shortest paths using Dijkstra's algorithm
+    // arguments: starting device of the network
+    // returns: nothing, displays the shortest latency to each device
+    void shortestPath(int start) {
+        if (start < 0 || start >= SIZE || !active[start]) {
+            cout << "Invalid starting device." << endl;
+            return;
+        }
+
+        vector<int> distance(SIZE, INF);
+        vector<bool> visited(SIZE, false);
+
+        distance[start] = 0;
+
+        // Find the shortest distance for each active device
+        for (int count = 0; count < SIZE; count++) {
+            int current = -1;
+            int minDistance = INF;
+
+            // Find the unvisited device with the shortest distance
+            for (int i = 0; i < SIZE; i++) {
+                if (active[i] && !visited[i] &&
+                    distance[i] < minDistance) {
+                    minDistance = distance[i];
+                    current = i;
+                }
+            }
+
+            // Stop if no more devices can be reached
+            if (current == -1) {
+                break;
+            }
+
+            visited[current] = true;
+
+            // Check all neighboring devices
+            for (Pair neighbor : adjList[current]) {
+                int next = neighbor.first;
+                int weight = neighbor.second;
+
+                if (active[next] && !visited[next] &&
+                    distance[current] <= INF - weight &&
+                    distance[current] + weight < distance[next]) {
+                    distance[next] = distance[current] + weight;
+                }
+            }
+        }
+
+        cout << "Shortest Network Latency from Device "
+             << start << " (" << deviceNames[start] << "):"
+             << endl;
+
+        for (int i = 0; i < SIZE; i++) {
+            if (active[i]) {
+                cout << "Device " << start << " -> Device " << i
+                     << " (" << deviceNames[i] << "): ";
+
+                if (distance[i] == INF) {
+                    cout << "Unreachable";
+                }
+                else {
+                    cout << distance[i] << " ms";
+                }
+
+                cout << endl;
+            }
+        }
+    }
 };
 
 int main() {
@@ -196,6 +267,10 @@ int main() {
 
     // Test breadth-first search starting from vertex 0
     graph.BFS(0);
+    cout << endl;
+
+    // Find shortest network latency from the main router
+    graph.shortestPath(0);
 
     return 0;
 }
