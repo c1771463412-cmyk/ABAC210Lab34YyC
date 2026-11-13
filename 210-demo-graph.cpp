@@ -6,7 +6,7 @@
 #include <stack>
 using namespace std;
 
-const int SIZE = 7;
+const int SIZE = 13;
 
 struct Edge {
     int src, dest, weight;
@@ -19,10 +19,22 @@ public:
     // a vector of vectors of Pairs to represent an adjacency list
     vector<vector<Pair>> adjList;
 
+    // Track which vertices are active in the graph
+    vector<bool> active;
+
     // Graph Constructor
     Graph(vector<Edge> const &edges) {
         // resize the vector to hold SIZE elements of type vector<Edge>
         adjList.resize(SIZE);
+
+        // Initialize all vertices as inactive
+        active.resize(SIZE, false);
+
+        // Mark vertices that appear in an edge as active
+        for (Edge edge : edges) {
+            active[edge.src] = true;
+            active[edge.dest] = true;
+        }
 
         // add edges to the directed graph
         for (auto &edge: edges) {
@@ -37,14 +49,23 @@ public:
         }
     }
 
-    // Print the graph's adjacency list
+    // printGraph() displays the graph's adjacency list
+    // arguments: none
+    // returns: nothing, displays all active vertices
     void printGraph() {
         cout << "Graph's adjacency list:" << endl;
-        for (int i = 0; i < adjList.size(); i++) {
-            cout << i << " --> ";
-            for (Pair v : adjList[i])
-                cout << "(" << v.first << ", " << v.second << ") ";
-            cout << endl;
+
+        for (int i = 0; i < SIZE; i++) {
+            if (active[i]) {
+                cout << i << " --> ";
+
+                for (Pair v : adjList[i]) {
+                    cout << "(" << v.first << ", "
+                         << v.second << ") ";
+                }
+
+                cout << endl;
+            }
         }
     }
 
@@ -52,6 +73,11 @@ public:
     // arguments: starting vertex of the traversal
     // returns: nothing, displays the visited vertices
     void DFS(int start) {
+        if (start < 0 || start >= SIZE || !active[start]) {
+            cout << "Invalid starting vertex." << endl;
+            return;
+        }
+
         vector<bool> visited(SIZE, false);
         stack<int> s;
 
@@ -83,6 +109,11 @@ public:
     // arguments: starting vertex of the traversal
     // returns: nothing, displays the visited vertices
     void BFS(int start) {
+        if (start < 0 || start >= SIZE || !active[start]) {
+            cout << "Invalid starting vertex." << endl;
+            return;
+        }
+
         vector<bool> visited(SIZE, false);
         queue<int> q;
 
@@ -115,7 +146,14 @@ int main() {
     // Creates a vector of graph edges/weights
     vector<Edge> edges = {
         // (x, y, w) —> edge from x to y having weight w
-        {0,1,12},{0,2,8},{0,3,21},{2,3,6},{2,6,2},{5,6,6},{4,5,9},{2,4,4},{2,5,5}
+        // Original nodes with updated weights
+        {0,2,10}, {2,6,4}, {5,6,7}, {4,5,12}, {2,4,6}, {2,5,9},
+
+        // Connections to six new nodes
+        {0,7,8}, {2,8,5}, {4,9,11}, {5,10,6}, {6,11,7}, {7,12,9},
+
+        // Additional connections
+        {7,8,3}, {8,9,4}, {9,10,8}, {10,11,5}, {11,12,6}
     };
 
     // Creates graph
