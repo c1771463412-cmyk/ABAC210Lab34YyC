@@ -4,6 +4,7 @@
 #include <vector>
 #include <queue>
 #include <stack>
+#include <string>
 using namespace std;
 
 const int SIZE = 13;
@@ -22,10 +23,28 @@ public:
     // Track which vertices are active in the graph
     vector<bool> active;
 
+    // Store the name of each network device
+    vector<string> deviceNames;
+
     // Graph Constructor
     Graph(vector<Edge> const &edges) {
         // resize the vector to hold SIZE elements of type vector<Edge>
         adjList.resize(SIZE);
+
+        // Initialize device names
+        deviceNames.resize(SIZE);
+
+        deviceNames[0] = "Main Router";
+        deviceNames[2] = "Core Switch";
+        deviceNames[4] = "Web Server";
+        deviceNames[5] = "Database Server";
+        deviceNames[6] = "Backup Server";
+        deviceNames[7] = "Wireless Router";
+        deviceNames[8] = "Office Switch";
+        deviceNames[9] = "Workstation A";
+        deviceNames[10] = "Workstation B";
+        deviceNames[11] = "Firewall";
+        deviceNames[12] = "Storage Server";
 
         // Initialize all vertices as inactive
         active.resize(SIZE, false);
@@ -49,22 +68,24 @@ public:
         }
     }
 
-    // printGraph() displays the graph's adjacency list
+    // printGraph() displays the computer network connections
     // arguments: none
-    // returns: nothing, displays all active vertices
+    // returns: nothing, displays devices and their connections
     void printGraph() {
-        cout << "Graph's adjacency list:" << endl;
+        cout << "Computer Network Topology:" << endl;
+        cout << "==========================" << endl;
 
         for (int i = 0; i < SIZE; i++) {
             if (active[i]) {
-                cout << i << " --> ";
+                cout << "Device " << i << " ("
+                     << deviceNames[i] << ") connects to:" << endl;
 
                 for (Pair v : adjList[i]) {
-                    cout << "(" << v.first << ", "
-                         << v.second << ") ";
+                    cout << "  -> Device " << v.first
+                         << " (" << deviceNames[v.first] << ")"
+                         << " - Latency: " << v.second
+                         << " ms" << endl;
                 }
-
-                cout << endl;
             }
         }
     }
