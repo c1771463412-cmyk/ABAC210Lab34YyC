@@ -105,13 +105,16 @@ public:
         visited[start] = true;
         s.push(start);
 
-        cout << "DFS starting from vertex " << start << ":" << endl;
+        cout << "Depth-First Network Inspection (DFS):" << endl;
+        cout << "Starting from Device " << start << " ("
+             << deviceNames[start] << ")" << endl;
 
         while (!s.empty()) {
             int current = s.top();
             s.pop();
 
-            cout << current << " ";
+            cout << "Inspecting Device " << current << " (" 
+                 << deviceNames[current] << ")" << endl;
 
             for (Pair neighbor : adjList[current]) {
                 int next = neighbor.first;
@@ -123,7 +126,7 @@ public:
             }
         }
 
-        cout << endl;
+        cout << "Network inspection completed." << endl;
     }
 
     // BFS() traverses the graph using breadth-first search
@@ -141,13 +144,16 @@ public:
         visited[start] = true;
         q.push(start);
 
-        cout << "BFS starting from vertex " << start << ":" << endl;
+        cout << "Layer-by-Layer Network Scan (BFS):" << endl;
+        cout << "Starting from Device " << start << " ("
+             << deviceNames[start] << ")" << endl;
 
         while (!q.empty()) {
             int current = q.front();
             q.pop();
 
-            cout << current << " ";
+            cout << "Scanning Device " << current << " (" 
+                 << deviceNames[current] << ")" << endl;
 
             for (Pair neighbor : adjList[current]) {
                 int next = neighbor.first;
@@ -159,7 +165,7 @@ public:
             }
         }
 
-        cout << endl;
+        cout << "Network scan completed." << endl;
     }
 };
 
@@ -182,9 +188,11 @@ int main() {
 
     // Prints adjacency list representation of graph
     graph.printGraph();
+    cout << endl;
 
     // Test depth-first search starting from vertex 0
     graph.DFS(0);
+    cout << endl;
 
     // Test breadth-first search starting from vertex 0
     graph.BFS(0);
